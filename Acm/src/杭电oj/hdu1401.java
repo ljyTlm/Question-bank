@@ -1,148 +1,139 @@
 package º¼µçoj;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+
 public class hdu1401 {
 
-	private static HashMap<Integer, Integer> map_1;
-	private static HashMap<Integer, Integer> map_2;
-	private static int [][] pla = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+	private static int [][] pla = { {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+	private static boolean sum;
+	private static Scanner sc;
+	private static int [] grp;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Scanner sc = new Scanner(System.in);
+		sc = new Scanner(System.in);
 		while (sc.hasNext()) {
-			int [][] a = new int [9][9];
-			for (int i = 0; i < 8; i+= 2) {
-				a[sc.nextInt()][sc.nextInt()] = 1;
+			grp = new int [88888889];
+			Node star = new Node();
+			for (int i = 0; i < star.pieces.length; i++) {
+				star.pieces[i] = new Piece(sc.nextInt(), sc.nextInt());
 			}
-			a = new int [9][9];
-			int s_hash = getHash(a);
-			for (int i = 0; i < 8; i+=2) {
-				a[sc.nextInt()][sc.nextInt()] = 1;
+			Node end = new Node();
+			for (int i = 0; i < end.pieces.length; i++) {
+				end.pieces[i] = new Piece(sc.nextInt(), sc.nextInt());
 			}
-			int e_hash = getHash(a);
-			LinkedList<Node> list_1 = new LinkedList<>();
-			LinkedList<Node> list_2 = new LinkedList<>();
-			map_1 = new HashMap<Integer, Integer>();
-			map_2 = new HashMap<Integer, Integer>();
-			list_1.add(new Node(0, s_hash));
-			list_2.add(new Node(0, e_hash));
-			boolean sum = true;
-			while (!list_1.isEmpty() || !list_2.isEmpty()) {
-				if (!list_1.isEmpty()) {
-					sum = sum & bfs(list_1, 1);
+			star.sort();
+			end.sort();
+			grp[star.hash] = 10;
+			grp[end.hash] = 20;
+			LinkedList<Node> qu_1 = new LinkedList<>();
+			LinkedList<Node> qu_2 = new LinkedList<>();
+			qu_1.add(star);
+			qu_2.add(end);
+			sum = star.hash == end.hash;
+			while (!qu_1.isEmpty() || !qu_2.isEmpty()) {
+				if (sum) {
+					break;
 				}
-				if (!list_2.isEmpty()) {
-					sum = sum & bfs(list_2, 2);
+				if (!qu_1.isEmpty()) {
+					bfs(qu_1, 1);
+				}
+				if (!qu_2.isEmpty()) {
+					bfs(qu_2, 2);
 				}
 			}
-			if (sum) {
-				System.out.println("NO");
-			}else {
-				System.out.println("YES");
-			}
- 		}
+			System.out.println(sum?"YES":"NO");
+		}
 	}
-
-	private static boolean bfs(LinkedList<Node> list, int flag) {
+	private static void bfs(LinkedList<Node> qu, int f) {
 		// TODO Auto-generated method stub
-		Node node = list.poll();
-		System.out.println(flag+":  "+node.hash);
-		Piece [] pieces = alsHash(node.hash);
-		int [][] grp = getGrp(pieces);
-		for (int i = 0; i < pieces.length; i++) {
+		Node node = qu.poll();
+		//System.out.println(f+"  :  "+node.hash);
+		for (int i = 0; i < node.pieces.length; i++) {
 			for (int j = 0; j < 4; j++) {
-				int next_x = pieces[i].x + pla[j][0];
-				int next_y = pieces[i].y + pla[j][1];
+				int next_x = node.pieces[i].x + pla[j][0];
+				int next_y = node.pieces[i].y + pla[j][1];
 				if (cheek(next_x, next_y)) {
-					if (grp[next_x][next_y] == 1) {
+					if (isPiece(next_x, next_y, node.pieces, i)) {
 						next_x += pla[j][0];
 						next_y += pla[j][1];
 					}
-					if (cheek(next_x, next_y) && grp[next_x][next_y] != 1) {
-						grp[pieces[i].x][pieces[i].y] = 0;
-						grp[next_x][next_y] = 1;
-						int hash = getHash(grp);
-						if (map_1.get(hash) == null) {
-							map_1.put(hash, node.num+1);
-							map_2.put(hash, flag);
-							list.add(new Node(node.num+1, hash));
-						}else {
-							if (flag != map_2.get(hash)) {
-								return false;
-							}
+					if (cheek(next_x, next_y) && !isPiece(next_x, next_y, node.pieces, 9)) {
+						Node next = new Node();
+						for (int k = 0; k < node.pieces.length; k++) {
+							next.pieces[k] = new Piece(node.pieces[k].x, node.pieces[k].y);
 						}
-						grp[pieces[i].x][pieces[i].y] = 1;
-						grp[next_x][next_y] = 0;
+						next.pieces[i].x = next_x;
+						next.pieces[i].y = next_y;
+						next.sort();
+						next.num = node.num % 10 + 1;
+						if (grp[next.hash] == 0) {
+							if (next.num < 9) {
+								grp[next.hash] = f*10 + next.num;
+								qu.add(next);
+							}
+						}else if (grp[next.hash]/10 != f && grp[next.hash]%10+node.num <= 8) {
+							sum = true;
+							return;
+						}
 					}
 				}
 			}
 		}
-		return true;
 	}
-
-	private static int getHash(int[][] grp) {
+	private static boolean isPiece(int next_x, int next_y, Piece[] pieces, int i) {
 		// TODO Auto-generated method stub
-		int hash = 0;
-		for (int i = 1; i < grp.length; i++) {
-			for (int j = 1; j < grp.length; j++) {
-				if (grp[i][j] == 1) {
-					hash += i;
-					hash *= 10;
-					hash += j;
-					hash *= 10;
+		for (int j = 0; j < pieces.length; j++) {
+			if (j != i) {
+				if (next_x == pieces[j].x && next_y == pieces[j].y) {
+					return true;
 				}
 			}
 		}
-		return hash/10;
+		return false;
 	}
-
-	private static boolean cheek(int next_x, int next_y) {
+	private static boolean cheek(int x, int y) {
 		// TODO Auto-generated method stub
-		return next_x > 0 && next_x < 9 && next_y > 0 && next_y < 9;
+		return x > 0 && x < 9 && y > 0 && y < 9;
 	}
-
-	private static int[][] getGrp(Piece[] pieces) {
-		// TODO Auto-generated method stub
-		int [][] arr = new int [9][9];
-		for (int i = 0; i < pieces.length; i++) {
-			arr[pieces[i].x][pieces[i].y] = 1;
+	static class Node {
+		Piece [] pieces;
+		Integer hash;
+		Integer num;
+		public Node() {
+			// TODO Auto-generated constructor stub
+			pieces = new Piece [4];
+			hash = 0;
+			num = 0;
 		}
-		return arr;
-	}
-
-	private static Piece[] alsHash(Integer hash) {
-		// TODO Auto-generated method stub
-		Piece [] pieces = new Piece[4];
-		for (int i = 0; i < 4; i++) {
-			int x = hash%10;
+		public void sort() {
+			// TODO Auto-generated method stub
+			Arrays.sort(pieces);
+			for (int i = 0; i < pieces.length; i++) {
+				hash += pieces[i].x;
+				hash *= 10;
+				hash += pieces[i].y;
+				hash *= 10;
+			}
 			hash /= 10;
-			int y = hash%10;
-			hash /= 10;
-			pieces[i] = new Piece(x, y);
 		}
-		return pieces;
 	}
-
-}
-class Node {
-	public Node(int num, int hash) {
-		// TODO Auto-generated constructor stub
-		this.hash = hash;
-		this.num = num;
-	}
-	Integer num;
-	Integer hash;
-}
-
-class Piece{
-	public Piece(int x, int y) {
-		// TODO Auto-generated constructor stub
-		this.x = x;
-		this.y = y;
-	}
-
-	Integer x, y;
+	static class Piece implements Comparable<Piece>{
+		public Piece(int x, int y) {
+			// TODO Auto-generated constructor stub
+			this.x = x;
+			this.y = y;
+		}
+		Integer x, y;
+		@Override
+		public int compareTo(Piece o) {
+			// TODO Auto-generated method stub
+			if (x == o.x) {
+				return y.compareTo(o.y);
+			}
+			return x.compareTo(o.x);
+		}
+	} 
 }
