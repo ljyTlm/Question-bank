@@ -30,7 +30,7 @@ public class 税收和补贴_P1023 {
 			ArrayList<Node> data = new ArrayList<>();
 			double hope_sell = 0;
 			for (int i = 1; i < list.size(); i++) {
-				double k = (list.get(i-1).sell - list.get(i).sell) / (list.get(i).price - list.get(i-1).price);
+				double k = (list.get(i-1).sell - list.get(i).sell) / (list.get(i-1).price - list.get(i).price);
 				double b = list.get(i-1).sell - k*list.get(i-1).price;
 				for (double j = list.get(i-1).price; j < list.get(i).price; j++) {
 					double y = k*j + b;
@@ -46,13 +46,34 @@ public class 税收和补贴_P1023 {
 				}
 				data.add(new Node(i+list.get(list.size()-1).price, list.get(list.size()-1).sell-i*sub));
 			}
+			if (hope_sell == 0) {
+				System.out.println("NO SOLUTION");
+				continue;
+			}
+			double mx = -999999999;
+			double mn = 999999999;
 			for (int i = 0; i < data.size(); i++) {
-				if (data.get(i).price == hope) {
+				if (hope_sell - data.get(i).sell == 0) {
 					continue;
 				}
 				double v = data.get(i).price * data.get(i).sell - hope * hope_sell + cost * (hope_sell-data.get(i).sell);
 				v /= hope_sell - data.get(i).sell;
-				System.out.println(v);
+				if (hope_sell - data.get(i).sell>0) {
+					mx = Math.max(mx, v);
+					//System.out.println("你要大于等于："+v);
+				}else {
+					mn = Math.min(mn, v);
+					//System.out.println("你要小于等于："+v);
+				}
+			}
+			if (mx > mn) {
+				System.out.println("NO SOLUTION");
+			}else if (mx > 0) {
+				System.out.println((int)Math.ceil(mx));
+			}else if(mn < 0){
+				System.out.println((int)Math.floor(mn));
+			}else {
+				System.out.println(0);
 			}
 		}
 	}
