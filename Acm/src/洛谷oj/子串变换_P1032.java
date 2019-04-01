@@ -1,4 +1,4 @@
-package æ´›è°·oj;
+package Âå¹Èoj;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 
-public class å­ä¸²å˜æ¢_P1032 {
+public class ×Ó´®±ä»»_P1032 {
 
 	private static HashMap<String, Integer> map;
 	private static String[][] arr;
