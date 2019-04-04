@@ -1,8 +1,5 @@
 package Âå¹Èoj;
 
-import java.util.Arrays;
-import java.util.Scanner;
-
 public class »ğĞÇÈË_P1088 {
 
 	public static void main(String[] args) {

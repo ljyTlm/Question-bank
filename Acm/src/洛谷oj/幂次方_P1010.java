@@ -1,7 +1,6 @@
 package Âå¹Èoj;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Ãİ´Î·½_P1010 {

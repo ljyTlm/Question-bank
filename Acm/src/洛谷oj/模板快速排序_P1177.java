@@ -1,6 +1,5 @@
 package Âå¹Èoj;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Ä£°å¿ìËÙÅÅĞò_P1177 {

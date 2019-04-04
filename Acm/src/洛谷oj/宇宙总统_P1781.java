@@ -1,7 +1,6 @@
 package Âå¹Èoj;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ÓîÖæ×ÜÍ³_P1781 {
