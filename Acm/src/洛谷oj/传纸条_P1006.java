@@ -3,7 +3,6 @@ package 洛谷oj;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import 洛谷oj.方格取数_P1004.Node;
 
 public class 传纸条_P1006 {
 
@@ -24,16 +23,18 @@ public class 传纸条_P1006 {
 		int [][][] dp = new int[n+m+1][n+1][n+1];
 		for (int i = 3; i < n+m; i++) {
 			for (int j = 1; j < n; j++) {
-				if (i-j >= 1 && i-j <= n) {
+				if (i-j >= 1 && i-j <= m) {
 					for (int k = j+1; k <= n; k++) {
-						if (i-k >= 1 && i-k <= n) {
-							int x_1 = j + pla[i];
-							int y_1 = i-j + pla[i+1];
-							int x_2 = k + pla[i+2];
-							int y_2 = i-k + pla[i+3];
-							if (x_1 != x_2) {
-								dp[i][j][k] = Math.max(dp[i][j][k], dp[i-1][x_1][x_2]+arr[x_1][y_1]+arr[x_2][y_2]);  
-								System.out.println("i: "+i+"  j: "+j+"  k: "+k+"   v: "+dp[i][j][k]);
+						if (i-k >= 1 && i-k <= m) {
+							for (int p = 0; p < pla.length; p+=4) {
+								int x_1 = j + pla[p];
+								int y_1 = i-j + pla[p+1];
+								int x_2 = k + pla[p+2];
+								int y_2 = i-k + pla[p+3];
+								if (x_1 != x_2) {
+									dp[i][j][k] = Math.max(dp[i][j][k], dp[i-1][x_1][x_2]+arr[j][i-j]+arr[k][i-k]);  
+									//System.out.println("i: "+i+"  j: "+j+"  k: "+k+"   v: "+dp[i][j][k]);
+								}
 							}
 						}
 					}
