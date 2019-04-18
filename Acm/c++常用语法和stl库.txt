@@ -1,0 +1,11 @@
+优先队列
+	设自定义类：Node
+	声明：priority_queue<Node, vector<Node>, cmp> qu; 
+	使用：struct cmp{
+			bool operator()(Node a, Node b) {//运算符重定义 
+				if(a.v == b.v)
+					return a.k > b.k;
+				return a.v > b.v;// rank > n.rank 降序  rank < n.rank 降序
+			}
+		};
+
