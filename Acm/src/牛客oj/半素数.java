@@ -13,29 +13,28 @@ public class °ëËØÊý {
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		int [] number = new int[1000100];
-		int [] prime = new int[100000];
+		int [] number = new int[100001];
+		long [] prime = new long[100000];
 		int idx = 0;
 		for (int i = 2; i < number.length; i++) {
 			if (number[i] == 0) {
+				number[i] = idx;
 				prime[idx++] = i;
 				for (int j = i+i; j < number.length; j+=i) {
 					number[j] = 1;
 				}
+			}else {
+				number[i] = idx;
 			}
 		}
 		StringTokenizer sc = new StringTokenizer(reader.readLine());
-		int l = Integer.parseInt(sc.nextToken());
-		int r = Integer.parseInt(sc.nextToken());
+		long l = Long.parseLong(sc.nextToken());
+		long r = Long.parseLong(sc.nextToken());
 		Node [] arr = new Node[1000000];
 		int end = 0;
-		int k = (int)Math.sqrt(r);
-		for (int i = 0; i < idx; i++) {
-			for (int j = i; j < idx; j++) {
-				int val = prime[i]*prime[j];
-				if (val >= l && val <= r) {
-					arr[end++] = new Node(val, prime[i], prime[j]);
-				}
+		for (int i = 0; prime[i]*prime[i] <= r && i < idx; i++) {
+			for (int j = Math.max(i, number[(int)(l/prime[i])]); j < idx && prime[i]*prime[j] <= r; j++) {
+				arr[end++] = new Node(prime[i]*prime[j], prime[i], prime[j]);
 			}
 		}
 		Arrays.sort(arr, 0, end);
@@ -48,15 +47,15 @@ public class °ëËØÊý {
 		pWriter.close();
 	}
 	static class Node implements Comparable<Node>{
-		public Node(int val, int i, int j) {
+		public Node(long val, long i, long j) {
 			// TODO Auto-generated constructor stub
 			v = val;
 			a = i;
 			b = j;
 		}
-		Integer v;
-		int a;
-		int b;
+		Long v;
+		long a;
+		long b;
 		@Override
 		public int compareTo(Node o) {
 			// TODO Auto-generated method stub
